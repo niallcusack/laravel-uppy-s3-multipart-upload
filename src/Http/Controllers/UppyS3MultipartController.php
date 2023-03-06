@@ -23,14 +23,13 @@ class UppyS3MultipartController extends Controller
     /**
      * Encode URI.
      *
-     * @param string $str
-     *
+     * @param  string  $str
      * @return string The encoded URI string
      */
     protected function encodeURIComponent(string $str)
     {
-        if (!function_exists('encodeURIComponent')) {
-            $revert = ['%21'=>'!', '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')', '%2F'=>'/'];
+        if (! function_exists('encodeURIComponent')) {
+            $revert = ['%21' => '!', '%2A' => '*', '%27' => "'", '%28' => '(', '%29' => ')', '%2F' => '/'];
 
             return strtr(rawurlencode($str), $revert);
         }
@@ -96,24 +95,25 @@ class UppyS3MultipartController extends Controller
      *           metadata,
      *       }, { signal }).then(assertServerError)
      *
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return string JSON with the uploaded parts
      */
     public function createMultipartUpload(Request $request)
     {
         $type = $request->input('type');
+
         $filenameRequest = $request->input('filename');
         $fileName = pathinfo($filenameRequest, PATHINFO_FILENAME);
         $fileExtension = pathinfo($filenameRequest, PATHINFO_EXTENSION);
-        $folder = config('uppy-s3-multipart-upload.s3.bucket.folder') ? config('uppy-s3-multipart-upload.s3.bucket.folder').'/' : '';
-        $key = $folder.Str::of($fileName.'_'.microtime())->slug('_').'.'.$fileExtension;
+        $folder = $request->input('metadata')['folder'] ? $request->input('metadata')['folder'] : config('uppy-s3-multipart-upload.s3.bucket.folder').'/';
+        $key = $folder.Str::of($fileName.'.'.$fileExtension);
+        // $key and $folder are custom
 
         try {
             $result = $this->client->createMultipartUpload([
-                'Bucket'             => $this->bucket,
-                'Key'                => $key,
-                'ContentType'        => $type,
+                'Bucket' => $this->bucket,
+                'Key' => $key,
+                'ContentType' => $type,
                 'ContentDisposition' => 'inline',
             ]);
         } catch (Throwable $exception) {
@@ -126,16 +126,15 @@ class UppyS3MultipartController extends Controller
         return response()
             ->json([
                 'uploadId' => $result['UploadId'],
-                'key'      => $result['Key'],
+                'key' => $result['Key'],
             ]);
     }
 
     /**
      * List the multipart uploaded parts.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string                   $uploadId
-     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $uploadId
      * @return string JSON with the uploaded parts
      */
     public function getUploadedParts(Request $request, string $uploadId)
@@ -165,10 +164,9 @@ class UppyS3MultipartController extends Controller
      * return this.#client.get(`s3/multipart/${uploadId}?key=${filename}`, { signal })
      *          .then(assertServerError)
      *
-     * @param string $key
-     * @param string $uploadId
-     * @param int    $partIndex
-     *
+     * @param  string  $key
+     * @param  string  $uploadId
+     * @param  int  $partIndex
      * @return \Illuminate\Support\Collection
      */
     private function listPartsPage(string $key, string $uploadId, int $partIndex, $parts = null)
@@ -176,9 +174,9 @@ class UppyS3MultipartController extends Controller
         $parts = $parts ?? collect();
 
         $results = $this->client->listParts([
-            'Bucket'           => $this->bucket,
-            'Key'              => $key,
-            'UploadId'         => $uploadId,
+            'Bucket' => $this->bucket,
+            'Key' => $key,
+            'UploadId' => $uploadId,
             'PartNumberMarker' => $partIndex,
         ]);
 
@@ -218,9 +216,8 @@ class UppyS3MultipartController extends Controller
      * return this.#client.post(`s3/multipart/${uploadIdEnc}/complete?key=${filename}`, { parts }, { signal })
      *           .then(assertServerError)
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string                   $uploadId
-     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $uploadId
      * @return string
      */
     public function completeMultipartUpload(Request $request, string $uploadId)
@@ -239,9 +236,9 @@ class UppyS3MultipartController extends Controller
         //}
 
         $result = $this->client->completeMultipartUpload([
-            'Bucket'          => $this->bucket,
-            'Key'             => $key,
-            'UploadId'        => $this->encodeURIComponent($uploadId),
+            'Bucket' => $this->bucket,
+            'Key' => $key,
+            'UploadId' => $this->encodeURIComponent($uploadId),
             'MultipartUpload' => [
                 'Parts' => $parts,
             ],
@@ -270,9 +267,8 @@ class UppyS3MultipartController extends Controller
      * return this.#client.delete(`s3/multipart/${uploadIdEnc}?key=${filename}`, undefined, { signal })
      *           .then(assertServerError)
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string                   $uploadId
-     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $uploadId
      * @return string JSON empty
      */
     public function abortMultipartUpload(Request $request, string $uploadId)
@@ -280,8 +276,8 @@ class UppyS3MultipartController extends Controller
         $key = $request->input('key');
 
         $result = $this->client->abortMultipartUpload([
-            'Bucket'   => $this->bucket,
-            'Key'      => $this->encodeURIComponent($key),
+            'Bucket' => $this->bucket,
+            'Key' => $this->encodeURIComponent($key),
             'UploadId' => $this->encodeURIComponent($uploadId),
         ]);
 
@@ -292,8 +288,7 @@ class UppyS3MultipartController extends Controller
     /**
      * Presign a URL for a part.
      *
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return string JSON with the URL
      */
     public function signPartUpload(Request $request)
@@ -329,9 +324,8 @@ class UppyS3MultipartController extends Controller
      * return this.#client.get(`s3/multipart/${uploadId}/${partNumber}?key=${filename}`, { signal })
      *           .then(assertServerError)
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $partNumber
-     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $partNumber
      * @return string
      */
     public function getSignedUrl(Request $request, int $partNumber)
@@ -339,9 +333,9 @@ class UppyS3MultipartController extends Controller
         $key = $this->encodeURIComponent($request->input('key'));
 
         $command = $this->client->getCommand('UploadPart', [
-            'Bucket'     => $this->bucket,
-            'Key'        => $key,
-            'UploadId'   => $request->route('uploadId'),
+            'Bucket' => $this->bucket,
+            'Key' => $key,
+            'UploadId' => $request->route('uploadId'),
             'PartNumber' => (int) $partNumber,
         ]);
 

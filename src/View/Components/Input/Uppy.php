@@ -31,8 +31,7 @@ class Uppy extends Component
         $this->hiddenField = $hiddenField;
         $this->extraJSForOnUploadSuccess = $extraJSForOnUploadSuccess;
         $this->uploadElementClass = $uploadElementClass;
-
-        if (!$options) {
+        if (! $options) {
             $this->options = '{
                 debug: true,
                 autoProceed: true,
@@ -40,14 +39,14 @@ class Uppy extends Component
             }';
         }
 
-        if (!$statusBarOptions) {
+        if (! $statusBarOptions) {
             $this->statusBarOptions = "{
                 target: '.{$uploadElementClass} .for-ProgressBar',
                 hideAfterFinish: false,
             }";
         }
 
-        if (!$dragDropOptions) {
+        if (! $dragDropOptions) {
             $this->dragDropOptions = "{
                 target: '.{$uploadElementClass} .for-DragDrop',
             }";
