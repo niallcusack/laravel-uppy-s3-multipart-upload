@@ -1,16 +1,16 @@
 {
-    "name": "tapp/laravel-uppy-s3-multipart-upload",
+    "name": "niallcusack/laravel-uppy-s3-multipart-upload",
     "description": "Multipart Uploads using Laravel, AWS S3, and Uppy",
     "keywords": [
-        "tapp network",
+        "Niall Cusack",
         "laravel-uppy-s3-multipart-upload"
     ],
-    "homepage": "https://github.com/TappNetwork/laravel-uppy-s3-multipart-upload",
+    "homepage": "https://github.com/niallcusack/laravel-uppy-s3-multipart-upload",
     "license": "MIT",
     "authors": [
         {
-            "name": "Tapp Network",
-            "email": "steve@tappnetwork.com",
+            "name": "Niall Cusack",
+            "email": "niallcusack@gmail.com",
             "role": "Developer"
         }
     ],
@@ -31,13 +31,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Tapp\\LaravelUppyS3MultipartUpload\\": "src",
-            "Tapp\\LaravelUppyS3MultipartUpload\\Database\\Factories\\": "database/factories"
+            "niallcusack\\LaravelUppyS3MultipartUpload\\": "src",
+            "niallcusack\\LaravelUppyS3MultipartUpload\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tapp\\LaravelUppyS3MultipartUpload\\Tests\\": "tests"
+            "niallcusack\\LaravelUppyS3MultipartUpload\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -54,10 +54,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Tapp\\LaravelUppyS3MultipartUpload\\LaravelUppyS3MultipartUploadServiceProvider"
+                "niallcusack\\LaravelUppyS3MultipartUpload\\LaravelUppyS3MultipartUploadServiceProvider"
             ],
             "aliases": {
-                "LaravelUppyS3MultipartUpload": "Tapp\\LaravelUppyS3MultipartUpload\\LaravelUppyS3MultipartUploadFacade"
+                "LaravelUppyS3MultipartUpload": "niallcusack\\LaravelUppyS3MultipartUpload\\LaravelUppyS3MultipartUploadFacade"
             }
         }
     },
