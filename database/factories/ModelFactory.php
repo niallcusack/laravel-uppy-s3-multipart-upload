@@ -1,6 +1,6 @@
 <?php
 
-namespace Tapp\LaravelUppyS3MultipartUpload\Database\Factories;
+namespace niallcusack\LaravelUppyS3MultipartUpload\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

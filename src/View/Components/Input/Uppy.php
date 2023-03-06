@@ -1,6 +1,6 @@
 <?php
 
-namespace Tapp\LaravelUppyS3MultipartUpload\View\Components\Input;
+namespace niallcusack\LaravelUppyS3MultipartUpload\View\Components\Input;
 
 use Illuminate\View\Component;
 

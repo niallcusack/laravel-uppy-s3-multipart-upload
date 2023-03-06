@@ -1,11 +1,11 @@
 <?php
 
-namespace Tapp\LaravelUppyS3MultipartUpload;
+namespace niallcusack\LaravelUppyS3MultipartUpload;
 
 use Illuminate\Support\Facades\Blade;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Tapp\LaravelUppyS3MultipartUpload\View\Components\Input\Uppy;
+use niallcusack\LaravelUppyS3MultipartUpload\View\Components\Input\Uppy;
 
 class LaravelUppyS3MultipartUploadServiceProvider extends PackageServiceProvider
 {

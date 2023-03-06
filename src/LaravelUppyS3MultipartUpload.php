@@ -1,6 +1,6 @@
 <?php
 
-namespace Tapp\LaravelUppyS3MultipartUpload;
+namespace niallcusack\LaravelUppyS3MultipartUpload;
 
 class LaravelUppyS3MultipartUpload
 {
