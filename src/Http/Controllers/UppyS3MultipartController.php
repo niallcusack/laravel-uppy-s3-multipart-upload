@@ -103,7 +103,7 @@ class UppyS3MultipartController extends Controller
         $type = $request->input('type');
 
         $filenameRequest = $request->input('filename');
-        $fileName = pathinfo($filenameRequest, PATHINFO_FILENAME);
+        $fileName = $request->input('metadata')['name'] ? $request->input('metadata')['name'] : pathinfo($filenameRequest, PATHINFO_FILENAME);
         $fileExtension = pathinfo($filenameRequest, PATHINFO_EXTENSION);
         $folder = $request->input('metadata')['folder'] ? $request->input('metadata')['folder'] : config('uppy-s3-multipart-upload.s3.bucket.folder').'/';
         $key = $folder.Str::of($fileName.'.'.$fileExtension);
